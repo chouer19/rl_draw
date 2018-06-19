@@ -24,42 +24,62 @@ def main():
             args = line.split('\t')
             map_cx.append(float(args[0]))
             map_cy.append(float(args[1]))
+            line = mapfile.readline()
 
+    rlfile = open('./log/rl.track')
     rl_cx = []
     rl_cy = []
+    rlline = rlfile.readline()
 
+    ppfile = open('./log/pp.track')
     pp_cx = []
     pp_cy = []
+    ppline = ppfile.readline()
 
+    stanelyfile = open('./log/stanely.track')
     stanely_cx = []
     stanely_cy = []
-    #read file line by line
-    while True:
+    stanelyline = stanelyfile.readline()
 
-        x.append(mpc.state.x)
-        y.append(mpc.state.y)
-        yaw.append(mpc.state.yaw)
-        v.append(mpc.state.v)
-        t.append(time)
-        d.append(di)
-        a.append(ai)
+    #read file line by line
+    while rlline and ppline and stanelyline:
+
+        rlargs = rlline.split('\t')
+        rl_cx.append(float(rlargs[0]))
+        rl_cy.append(float(rlargs[1]))
+        sumrl = 12
+        while sumrl > 0:
+            rlline = rlfile.readline()
+            sumrl -= 1
+
+        ppargs = ppline.split('\t')
+        pp_cx.append(float(ppargs[0]))
+        pp_cy.append(float(ppargs[1]))
+        sumpp = 5
+        while sumpp > 0:
+            ppline = ppfile.readline()
+            sumpp -= 1
+
+        stanelyargs = stanelyline.split('\t')
+        stanely_cx.append(float(stanelyargs[0]))
+        stanely_cy.append(float(stanelyargs[1]))
+        sumstanely = 5
+        while sumstanely > 0:
+            stanelyline = stanelyfile.readline()
+            sumstanely -= 1
+
+        plt.plot(map_cx, map_cy, "-r", label="course", linewidth=1)
+        plt.plot(rl_cx, rl_cy, "-b", label="trajectory", linewidth=1)
+        plt.plot(pp_cx, pp_cy, "-k", label="trajectory", linewidth=1)
+        plt.plot(stanely_cx, stanely_cy, "-m", label="trajectory", linewidth = 1)
+        plt.grid(True)
+        plt.pause(0.001)
     
-        if mpc.show_animation:
-            plt.cla()
-            if ox is not None:
-                plt.plot(ox, oy, "xr", label="MPC")
-            plt.plot(cx, cy, "-r", label="course")
-            plt.plot(x, y, "ob", label="trajectory")
-            plt.plot(xref[0, :], xref[1, :], "xk", label="xref")
-            plt.plot(cx[target_ind], cy[target_ind], "xg", label="target")
-            mpc.plot_car(state.x, state.y, state.yaw, steer=di)
-            plt.axis("equal")
-            plt.grid(True)
-            plt.title("Time[s]:" + str(round(time, 2)) +
-                      ", yaw:" + str(round(state.yaw, 2)))
-            plt.pause(0.0001)
-    
-    return t, x, y, yaw, v, d, a
+        plt.plot(map_cx, map_cy, "-r", label="course", linewidth=1)
+        plt.plot(rl_cx, rl_cy, "-b", label="trajectory", linewidth=1)
+        plt.plot(pp_cx, pp_cy, "-k", label="trajectory", linewidth=1)
+        plt.plot(stanely_cx, stanely_cy, "-m", label="trajectory", linewidth = 1)
+        plt.grid(True)
 
 if __name__ == '__main__':
     main()
